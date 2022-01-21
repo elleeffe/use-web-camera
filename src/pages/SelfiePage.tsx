@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 
 interface SelfiePageProps {
   stream: MediaStream;
@@ -6,7 +6,6 @@ interface SelfiePageProps {
 }
 
 export default function SelfiePage({stream, handlePhotoUrl}: SelfiePageProps) {
-  const [error, setError] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -14,7 +13,6 @@ export default function SelfiePage({stream, handlePhotoUrl}: SelfiePageProps) {
     if (!(canvasRef.current && videoRef.current)) {
       return;
     }
-    setError(false);
     canvasRef.current.width = videoRef.current.videoWidth;
     canvasRef.current.height = videoRef.current.videoHeight;
     canvasRef.current
@@ -37,28 +35,13 @@ export default function SelfiePage({stream, handlePhotoUrl}: SelfiePageProps) {
   }, [videoRef, stream]);
 
   return (
-    <div>
-      <h1>Scatta un selfie</h1>
-      <p>
-        In posa, sorridi... Scatta!
-        <br />
-        Niente paura, puoi provare tutti gli scatti che vuoi prima di mandare
-        quello che preferisci.
-      </p>
-      <div>
-        <div>
-          <video
-            autoPlay
-            ref={videoRef}
-            playsInline
-            controls={false}
-            muted
-          ></video>
-          <button onClick={getPhotoUrl}>Scatta</button>
-        </div>
-      </div>
+    <>
+      <h1 className="text-center is-marginless">Selfieee!</h1>
+      <video autoPlay ref={videoRef} playsInline controls={false} muted />
+      <button onClick={getPhotoUrl} className="button success">
+        Scatta
+      </button>
       <canvas className="hidden" ref={canvasRef} />
-      {error && <p>Ops, qualcosa è andato storto. Per favore, riprova.</p>}
-    </div>
+    </>
   );
 }
