@@ -3,20 +3,24 @@ import useApp from './hooks/useApp';
 import PreviewPage from './pages/PreviewPage';
 import SelfiePage from './pages/SelfiePage';
 import StartPage from './pages/StartPage';
+import VideoPage from './pages/VideoPage';
 import loader from './assets/loader.svg';
 
 export default function App() {
-  const {step, stream, handleStream, photoUrl, handlePhotoUrl, retryShooting} =
+  const {step, stream, handleStream, mediaUrl, handleMediaUrl, retry} =
     useApp();
 
   return (
     <div className="main-wrapper">
       {step === 'start' && <StartPage handleStream={handleStream} />}
-      {step === 'selfie' && stream && (
-        <SelfiePage stream={stream} handlePhotoUrl={handlePhotoUrl} />
+      {step === 'image' && stream && (
+        <SelfiePage stream={stream} handleMediaUrl={handleMediaUrl} />
       )}
-      {step === 'preview' && photoUrl && (
-        <PreviewPage photoUrl={photoUrl} onRetry={retryShooting} />
+      {step === 'video' && stream && (
+        <VideoPage stream={stream} handleMediaUrl={handleMediaUrl} />
+      )}
+      {(step === 'video-preview' || step === 'image-preview') && mediaUrl && (
+        <PreviewPage mediaUrl={mediaUrl} onRetry={retry} type={step} />
       )}
       {step === 'not-supported' && (
         <h1 className="text-error text-center is-marginless">

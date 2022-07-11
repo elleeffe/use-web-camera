@@ -1,44 +1,49 @@
 import {useCallback, useEffect, useState} from 'react';
 
-type Steps = 'loading' | 'not-supported' | 'start' | 'selfie' | 'preview';
+type Steps =
+  | 'loading'
+  | 'not-supported'
+  | 'start'
+  | 'image'
+  | 'video'
+  | 'video-preview'
+  | 'image-preview';
 
 export default function useApp() {
   const [step, setStep] = useState<Steps>('loading');
   const [stream, setStream] = useState<MediaStream>();
-  const [photoUrl, setPhotoUrl] = useState<string>();
+  const [mediaUrl, setMediaUrl] = useState<string>();
 
   const handleStream = useCallback(
-    (stream: MediaStream) => setStream(stream),
+    (stream: MediaStream, type: 'image' | 'video') => {
+      setStream(stream);
+      setStep(type);
+    },
     []
   );
 
-  const handlePhotoUrl = useCallback((photoUrl: string) => {
-    setPhotoUrl(photoUrl);
-    setStep('preview');
+  const handleMediaUrl = useCallback((url: string, type: 'image' | 'video') => {
+    setMediaUrl(url);
+    setStep(`${type}-preview`);
   }, []);
 
-  const retryShooting = useCallback(async () => {
-    setPhotoUrl(undefined);
+  const retry = useCallback(async (type: 'image-preview' | 'video-preview') => {
+    setMediaUrl(undefined);
     setStep('loading');
     const stream = await navigator.mediaDevices.getUserMedia({
+      audio: type === 'video-preview',
       video: {
         width: {ideal: 1080},
         height: {ideal: 720},
         facingMode: 'user',
       },
     });
-    console.log({stream});
     setStream(stream);
+    setStep(type === 'image-preview' ? 'image' : 'video');
   }, []);
 
   useEffect(() => {
-    if (stream) {
-      setStep('selfie');
-    }
-  }, [stream]);
-
-  useEffect(() => {
-    if (step === 'preview' && stream) {
+    if (step === 'image-preview' && stream) {
       stream.getTracks().forEach((item) => item.stop());
       setStream(undefined);
     }
@@ -56,8 +61,8 @@ export default function useApp() {
     step,
     stream,
     handleStream,
-    photoUrl,
-    handlePhotoUrl,
-    retryShooting,
+    mediaUrl,
+    handleMediaUrl,
+    retry,
   };
 }

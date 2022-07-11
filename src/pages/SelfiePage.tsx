@@ -1,11 +1,11 @@
-import React, {useCallback, useEffect, useRef} from 'react';
+import {useCallback, useEffect, useRef} from 'react';
 
 interface SelfiePageProps {
   stream: MediaStream;
-  handlePhotoUrl: (photoUrl: string) => void;
+  handleMediaUrl: (mediaUrl: string, type: 'image' | 'video') => void;
 }
 
-export default function SelfiePage({stream, handlePhotoUrl}: SelfiePageProps) {
+export default function SelfiePage({stream, handleMediaUrl}: SelfiePageProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -25,8 +25,8 @@ export default function SelfiePage({stream, handlePhotoUrl}: SelfiePageProps) {
         canvasRef.current.height
       );
     const photoUrl = canvasRef.current.toDataURL('image/png');
-    handlePhotoUrl(photoUrl);
-  }, [canvasRef, videoRef, handlePhotoUrl]);
+    handleMediaUrl(photoUrl, 'image');
+  }, [canvasRef, videoRef, handleMediaUrl]);
 
   useEffect(() => {
     if (videoRef.current && canvasRef.current) {
@@ -36,7 +36,7 @@ export default function SelfiePage({stream, handlePhotoUrl}: SelfiePageProps) {
 
   return (
     <>
-      <h1 className="text-center is-marginless">Selfieee!</h1>
+      <h1 className="text-center is-marginless">Image</h1>
       <video autoPlay ref={videoRef} playsInline controls={false} muted />
       <button onClick={getPhotoUrl} className="button success">
         Scatta
