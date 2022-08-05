@@ -1,4 +1,5 @@
-import React, {useCallback, useState} from 'react';
+import {useCallback, useState} from 'react';
+import logo from '../assets/logo.svg';
 
 interface StartPageProps {
   handleStream: (stream: MediaStream, type: 'image' | 'video') => void;
@@ -39,6 +40,7 @@ export default function StartPage({handleStream}: StartPageProps) {
 
   return (
     <>
+      <img src={logo} alt="logo" style={{width: '100px'}} />
       <h1 className="text-center is-marginless">Use camera from web</h1>
       <p className="text-center">
         Prima di iniziare, ti verranno chiesti i permessi per accedere alla
